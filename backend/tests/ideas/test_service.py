@@ -252,6 +252,19 @@ def test_search_can_filter_by_status(
 
     assert result["total"] == 1
 
+def test_search_without_status_filter_returns_all_statuses(
+    db, student, idea_data
+):
+    service.propose_idea(db, idea_data, student)
+
+    result = service.search_ideas(
+        db,
+        status=None,
+    )
+
+    assert result["total"] == 1
+    assert result["items"][0].status == IdeaStatus.PENDING
+
 
 def test_search_returns_empty_result_for_no_matches(db):
     result = service.search_ideas(
