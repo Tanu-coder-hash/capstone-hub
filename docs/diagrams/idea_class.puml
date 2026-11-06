@@ -1,0 +1,43 @@
+@startuml
+
+title Idea Bank - Class Diagram
+
+class Idea {
+    +id: int
+    +title: string
+    +description: text
+    +domain: string
+    +tech_stack: string
+    +difficulty: Difficulty
+    +status: IdeaStatus
+    +reject_reason: string
+    +posted_by: int
+    +team_id: int
+    +created_at: datetime
+}
+
+class IdeaVote {
+    +id: int
+    +idea_id: int
+    +user_id: int
+    +created_at: datetime
+}
+
+enum IdeaStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    TAKEN
+}
+
+enum Difficulty {
+    EASY
+    MEDIUM
+    HARD
+}
+
+Idea "1" -- "0..*" IdeaVote : receives
+Idea --> IdeaStatus
+Idea --> Difficulty
+
+@enduml
