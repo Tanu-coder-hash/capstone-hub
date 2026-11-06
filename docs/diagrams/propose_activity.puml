@@ -1,0 +1,55 @@
+@startuml
+
+title Idea Bank - Propose Idea Activity Diagram
+
+start
+
+:Student opens Propose Idea page;
+
+:Enter idea title;
+:Enter description;
+:Select domain;
+:Enter technology stack;
+:Select difficulty;
+
+:Submit proposal;
+
+:Validate input;
+
+if (Input valid?) then (Yes)
+
+    :Generate TF-IDF representation;
+    :Calculate cosine similarity;
+    :Find top 3 similar ideas;
+
+    if (Similarity score > 0.8?) then (Yes)
+
+        :Display similar ideas;
+
+        if (Student wants to continue?) then (Yes)
+            :Confirm proposal submission;
+            :Create idea with PENDING status;
+            :Save idea to database;
+            :Show submission success;
+        else (No)
+            :Return to proposal form;
+        endif
+
+    else (No)
+
+        :Create idea with PENDING status;
+        :Save idea to database;
+        :Show submission success;
+
+    endif
+
+else (No)
+
+    :Display validation errors;
+    :Return to proposal form;
+
+endif
+
+stop
+
+@enduml
