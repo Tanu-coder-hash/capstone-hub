@@ -1,0 +1,51 @@
+@startuml
+
+title Idea Bank - Vote Sequence Diagram
+
+actor Student
+participant "Frontend" as UI
+participant "Ideas Router" as Router
+participant "Idea Service" as Service
+database "Database" as DB
+
+Student -> UI: Click Upvote
+UI -> Router: POST /api/v1/ideas/{id}/vote
+Router -> Service: vote(db, idea_id, user)
+
+Service -> DB: Find idea by ID
+DB --> Service: Return idea
+
+alt Idea does not exist
+    Service --> Router: NotFound
+    Router --> UI: 404 Not Found
+
+else Idea exists
+    Service -> Service: Check idea status
+
+    alt Idea cannot be voted on
+        Service --> Router: Conflict
+        Router --> UI: 409 Conflict
+
+    else Idea is votable
+        Service -> DB: Check existing vote
+        DB --> Service: Existing vote or none
+
+        alt Student already voted
+            Service --> Router: Conflict
+            Router --> UI: 409 Already voted
+
+        else Student has not voted
+            Service -> DB: Insert new IdeaVote
+            DB --> Service: Vote inserted
+            Service -> DB: Commit transaction
+            DB --> Service: Commit successful
+            Service -> DB: Count votes
+            DB --> Service: Total vote count
+            Service --> Router: VoteOut
+            Router --> UI: 200 OK + vote count
+            UI --> Student: Display updated vote count
+        end
+    end
+end
+
+@enduml
