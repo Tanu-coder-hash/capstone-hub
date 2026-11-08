@@ -7,6 +7,8 @@ from app.core.db import Base, engine
 from app.ideas import models
 from app.ideas.router import router as ideas_router
 
+from app.teams import models as team_models  # noqa: F401
+from app.teams.router import router as teams_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -37,3 +39,5 @@ def health():
 
 
 app.include_router(ideas_router)
+app.include_router(ideas_router)
+app.include_router(teams_router)
