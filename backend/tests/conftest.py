@@ -7,6 +7,8 @@ from sqlalchemy.pool import StaticPool
 from app.core.db import Base
 from app.ideas import models
 
+from app.ideas import models
+from app.teams import models as team_models
 
 @pytest.fixture
 def db():
