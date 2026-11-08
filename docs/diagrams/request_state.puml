@@ -1,0 +1,9 @@
+@startuml request_state
+[*] --> Pending : leader requests idea
+Pending --> Approved : idea owner approves
+Pending --> Rejected : idea owner rejects
+Pending --> Cancelled : new preference list /\nidea given to another team /\nteam dissolved
+Cancelled --> Pending : requested again
+Approved --> [*]
+Rejected --> [*]
+@enduml

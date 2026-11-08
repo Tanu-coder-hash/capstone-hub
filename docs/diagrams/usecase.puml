@@ -18,6 +18,12 @@ rectangle "Idea Bank and Voting System" {
     usecase "Approve Proposal" as UC11
     usecase "Reject Proposal" as UC12
     usecase "Mark Idea as Taken" as UC13
+    usecase "Create Team" as UT1
+    usecase "Invite Member" as UT2
+    usecase "Respond to Invite" as UT3
+    usecase "Leave / Dissolve Team" as UT4
+    usecase "Request Ideas" as UT5
+    usecase "Approve / Reject Request" as UT6
 }
 
 Student --> UC1
@@ -27,7 +33,11 @@ Student --> UC4
 Student --> UC6
 Student --> UC7
 Student --> UC8
-
+Student --> UT1
+Student --> UT2
+Student --> UT3
+Student --> UT4
+Student --> UT5
 UC4 .> UC5 : <<include>>
 
 Faculty --> UC1
@@ -39,5 +49,6 @@ Faculty --> UC10
 Faculty --> UC11
 Faculty --> UC12
 Faculty --> UC13
-
+Faculty --> UT6
+UT6 ..> UC13 : <<include>>
 @enduml
