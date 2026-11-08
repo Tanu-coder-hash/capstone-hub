@@ -1,0 +1,10 @@
+@startuml team_state
+[*] --> Forming : create_team
+Forming --> Complete : 3rd member accepts
+Complete --> Forming : member leaves (< 3)
+Complete --> Allocated : faculty approves request
+Forming --> Dissolved : leader dissolves
+Complete --> Dissolved : leader dissolves
+Allocated --> [*]
+Dissolved --> [*]
+@enduml

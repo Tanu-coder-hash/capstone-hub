@@ -1,0 +1,70 @@
+@startuml team_class
+
+class Team {
+  +id: int
+  +name: str
+  +leader_id: int
+  +semester: str
+  +idea_id: int?
+  +guide_id: int?
+  +status: TeamStatus
+}
+
+class TeamMember {
+  +id: int
+  +team_id: int
+  +user_id: int
+  +status: MemberStatus
+}
+
+class IdeaRequest {
+  +id: int
+  +team_id: int
+  +idea_id: int
+  +preference: int
+  +status: RequestStatus
+}
+
+class TeamService {
+  +create_team(name, user): Team
+  +invite_member(team_id, invitee_id, user): TeamMember
+  +respond_invite(membership_id, accept, user): TeamMember
+  +leave_team(team_id, user): Team
+  +dissolve_team(team_id, user)
+  +request_ideas(team_id, idea_ids, user): list
+  +approve_request(request_id, user): Team
+  +reject_request(request_id, user): IdeaRequest
+  +get_team_for_user(user_id): Team?
+  +get_guide(team_id): int?
+}
+
+class IdeaService <<Member 1>> {
+  +mark_taken(idea_id, team_id)
+}
+
+enum TeamStatus {
+  FORMING
+  COMPLETE
+  ALLOCATED
+  DISSOLVED
+}
+
+enum MemberStatus {
+  INVITED
+  ACCEPTED
+  REJECTED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+Team "1" -- "1..4" TeamMember
+Team "1" -- "0..3" IdeaRequest
+TeamService ..> Team
+TeamService ..> IdeaService : uses
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml er_diagram
+
+hide circle
+skinparam linetype ortho
+
+entity users {
+  *id: int <<PK>>
+  name: varchar
+  role: enum
+}
+
+entity ideas {
+  *id: int <<PK>>
+  title: varchar(150)
+  status: enum
+  posted_by: int <<FK users>>
+  team_id: int
+}
+
+entity idea_votes {
+  *id: int <<PK>>
+  idea_id: int <<FK>>
+  user_id: int <<FK>>
+  --
+  UNIQUE(idea_id, user_id)
+}
+
+entity teams {
+  *id: int <<PK>>
+  name: varchar(80) <<UNIQUE>>
+  leader_id: int <<FK users>>
+  semester: varchar(20)
+  idea_id: int <<FK, UNIQUE>>
+  guide_id: int <<FK users>>
+  status: enum
+}
+
+entity team_members {
+  *id: int <<PK>>
+  team_id: int <<FK>>
+  user_id: int <<FK>>
+  semester: varchar(20)
+  status: enum
+  --
+  UNIQUE(team_id, user_id)
+  UNIQUE(user_id, semester) WHERE accepted
+}
+
+entity idea_requests {
+  *id: int <<PK>>
+  team_id: int <<FK>>
+  idea_id: int <<FK>>
+  preference: int
+  status: enum
+  --
+  UNIQUE(team_id, idea_id)
+}
+
+users ||--o{ ideas : posts
+users ||--o{ idea_votes : casts
+ideas ||--o{ idea_votes : receives
+users ||--o{ team_members : joins
+teams ||--|{ team_members : has
+teams ||--o{ idea_requests : makes
+ideas ||--o{ idea_requests : requested_in
+ideas ||--o| teams : allocated_to
+
+@enduml
