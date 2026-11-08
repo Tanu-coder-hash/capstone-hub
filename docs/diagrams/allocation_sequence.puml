@@ -1,0 +1,32 @@
+@startuml allocation_sequence
+actor Faculty
+participant "React UI" as UI
+participant "Teams Router" as R
+participant TeamService as S
+participant "IdeaService\n (Member 1)" as IS
+database PostgreSQL as DB
+
+Faculty -> UI : click Approve
+UI -> R : PATCH /api/v1/teams/idea-requests/5/approve
+R -> S : approve_request(5, user)
+S -> DB : load request, check owner + PENDING
+S -> DB : SELECT idea... FOR UPDATE (row lock)
+S -> IS : mark_taken(idea_id, team_id)
+
+alt idea not APPROVED
+    IS --> S : Conflict
+    S -> DB : ROLLBACK
+    R -> UI : 409 "Idea already allocated"
+else ok
+    S -> DB : team.idea_id, guide_id, status=ALLOCATED
+    S -> DB : cancel other pending requests
+    S -> DB : COMMIT
+    alt unique (teams.idea_id) violated
+        DB -> S : IntegrityError
+        S -> DB : ROLLBACK
+        R -> UI : 409 "Idea already allocated"
+    else success
+        R --> UI : 200 team (allocated)
+    end
+end
+@enduml

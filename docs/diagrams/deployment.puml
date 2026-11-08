@@ -1,0 +1,22 @@
+@startuml deployment
+node "Client device" {
+  artifact Browser
+}
+
+node "Docker host (college VM)" {
+  node "frontend container\nNginx:80" as FE
+  node "backend container\nFastAPI/uvicorn : 8000" as BE
+  database "db container\nPostgreSQL 16:5432" as DB
+  node "jenkins container: 8080" as J
+  node "sonarqube container : 9000" as SQ
+}
+
+cloud GitHub
+
+Browser --> FE : HTTPS
+FE --> BE : REST /api/v1
+BE --> DB : SQL
+GitHub --> J : webhook / poll
+J --> SQ : analysis
+J --> BE : docker compose up
+@enduml
