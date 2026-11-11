@@ -4,11 +4,17 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.core.db import Base, engine
-from app.ideas import models
-from app.ideas.router import router as ideas_router
 
-from app.teams import models as team_models  # noqa: F401
+# Import models so SQLAlchemy registers all tables
+from app.ideas import models
+from app.teams import models as team_models
+from app.deliverables import models as deliverable_models
+
+# Import routers
+from app.ideas.router import router as ideas_router
 from app.teams.router import router as teams_router
+from app.deliverables.router import router as deliverables_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,7 +25,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Capstone Hub API",
-    description="Idea Bank and Voting API",
+    description="Capstone Hub - Ideas, Teams and Deliverables",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -32,12 +38,12 @@ def root():
         "module": "Idea Bank and Voting",
     }
 
-
 @app.get("/health")
 def health():
     return {"status": "healthy"}
 
 
-app.include_router(ideas_router)
+# Register all module routers
 app.include_router(ideas_router)
 app.include_router(teams_router)
+app.include_router(deliverables_router)
