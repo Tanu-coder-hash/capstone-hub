@@ -10,6 +10,12 @@ from app.ideas.router import router as ideas_router
 from app.teams import models as team_models  # noqa: F401
 from app.teams.router import router as teams_router
 
+from app.notifications import models as notification_models
+from app.notifications.router import router as notifications_router
+
+from app.feedback import models as feedback_models
+from app.feedback.router import router as feedback_router
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create database tables during development.
@@ -39,5 +45,6 @@ def health():
 
 
 app.include_router(ideas_router)
-app.include_router(ideas_router)
 app.include_router(teams_router)
+app.include_router(notifications_router)
+app.include_router(feedback_router)
